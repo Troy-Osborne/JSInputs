@@ -1,0 +1,150 @@
+<script>
+//The buttons for this demo. These aren't part of the main javascript code
+
+function DemoButton(codestring,caption="Button"){
+document.write( `<button onclick='${codestring}'>
+	${caption}
+</button>
+<textarea class=buttonlabel>${codestring}</textarea>
+<br>`);
+}
+
+</script>
+
+<style>
+#UserInput{position:absolute;top:12vh; left:20vw; width:60vw;min-height:10vh;
+background:#FFF;border:solid 1px #000;
+z-index:0;}
+#UITitle{width:calc(100% - 24px);padding-left:24px;height:24px;
+background:#66A;border-bottom:solid 1px #000;}
+#UIContents{width:100%;height:calc(100% - 24px);}
+#UIRow{width:100%;}
+#UIRLeft{width:35%;height:32px;display:inline-block;}
+#UIRRight{width:64%;min-height:32px;display:inline-block;}
+#UIBottomLeft{width:84%;height:32px;display:inline-block;}
+#UICaption{padding:12px;width:100%;}
+#UIBottomRight{width:15%;height:32px;display:inline-block;}
+input{width:100%;}
+#MainContent{position:absolute;top:0;left:0;width:100%;height:100%;background:#888;z-index:1}
+textarea.buttonlabel{display:inline-block;min-width:50vw;height:64px;vertical-align:top;}
+.fullsize{width:96%;height:100%;}
+</style>
+
+<body>
+<div id=MainContent>
+
+<script>
+//Place The Demo Buttons within Main Content. 
+//When they're clicked the corrosponding User Inputs will open.
+
+DemoButton('TextInput("Test Title","This is an example input","Default Value")',"Text Input");
+DemoButton('CustomInput("User Registration",["text","text","text","password","password"],["","","","",""],["Name:","Username:","Email:","Password:","Verify:"])',"User Registration");
+DemoButton('CustomInput("Upload File",["text","file","color"],["","","#FF0000"],["Name:","File:","Colour Code:"])',"Upload File");
+DemoButton('CustomInput("Contact Info",["text","tel","tel","text","text","file"],["First Last","0456123123","38921111","user@domain.com","<unit #>/<st #> <Street Name>, <Suburb or Town> <Postcode or Zipcode>, <State>, <Country>"],["Name:","Personal Phone:","Business Phone:","Email:","Postal Address:","Photo:"])',"Contact Info");
+DemoButton('CentreDialogue("Alert Title!","This is a demo alert!")',"Alert");
+DemoButton('CentreDialogue("Alert Title!","<img src=Sample.jpg class=fullsize>")',"Alert");
+</script>
+</div>
+<div id=UserInput>
+Invisible OnLoad
+</div>
+</body>
+
+
+<script>
+ExpectedInput=[];
+function ShowInput(){
+elem=document.getElementById('UserInput'); 
+elem.style["z-index"]=2;//bring to top
+//Disable Main Content
+}
+
+function HideInput(){
+elem=document.getElementById('UserInput'); 
+elem.style["z-index"]=0;//send to back
+//Enable Main Content
+}
+
+function submit(parentfunc){
+var arity=ExpectedInput.length;
+HideInput();
+GivenInputs=[];
+for (i=0;i<arity;i++){
+	elem=document.getElementById('Input'+i);
+	GivenInputs.push(elem.value); 
+}
+parentfunc(GivenInputs);
+}
+
+function CustomInput(Title,Types,Defaults,Captions,Caption="",buttonlabel="Submit",argnames=null,parentfunc=function (x){alert(`Given Arguments: ${x}`);}){
+if (argnames==null){
+var a=[];
+for (i=0;i<Types.length;i++){
+a.push("Input"+i)
+}
+argnames=a;
+}
+
+var Rows=[];
+if (Caption==null){
+	var RowString="";
+}
+else {
+	var RowString="<div id=UIRow><div id=UICaption>"+Caption+"</div></div><div id=UIRow></div>";
+}
+var SubmitButton=`<div id=UIRow>
+	<div id=UIBottomLeft></div>
+	<div id=UIBottomRight><input type=button value='${buttonlabel}' onclick='submit(${parentfunc})'></div>`;
+//Make Rows String
+for (i=0;i<Types.length;i++){
+Rows.push([Types[i],Defaults[i],Captions[i]]);
+var inp="<input id='Input"+i+"' name='"+argnames[i]+"' type='"+Types[i]+"' value='"+Defaults[i]+"'>";
+var cap=Captions[i];
+RowString=`${RowString}
+<div id=UIRow>
+	<div id=UIRLeft>${cap}</div>
+	<div id=UIRRight>${inp}</div>
+</div>
+`;
+}
+ExpectedInput=Rows;
+
+elem=document.getElementById('UserInput'); 
+
+elem.innerHTML=`<div id=UITitle>${Title}</div>
+<div id=UIContents>
+${RowString}
+${SubmitButton}
+</div>
+`;
+ShowInput();
+}
+
+function TextInput(Title,Caption,Default=""){
+  return CustomInput(Title,["text"],[Default],[Caption]);
+}
+
+function CentreDialogue(Title,Contents){
+  return CustomInput(Title,[],[],[],caption=Contents,buttonlabel="Done");
+}
+
+</script>
+
+
+<script>
+
+//Test the most basic input
+//TextInput("Test Title","This is an example input","Default Value");
+
+//Test a User Registration
+//CustomInput("User Registration",["text","text","text","password","password"],["","","","",""],["Name:","Username:","Email:","Password:","Verify:"]);
+
+//Test a File Upload
+//CustomInput("Upload File",["text","file","color"],["","","#FF0000"],["Name:","File:","Colour Code:"]);
+
+//Contact Info
+//CustomInput("Contact Info",["text","tel","tel","text","text","file"],["First Last","0456123123","38921111","user@domain.com","<unit #>/<st #> <Street Name>, <Suburb or Town> <Postcode or Zipcode>, <State>, <Country>"],["Name:","Personal Phone:","Business Phone:","Email:","Postal Address:","Photo:"],caption="Test");
+
+
+
+</script>
