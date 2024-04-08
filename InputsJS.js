@@ -91,7 +91,7 @@ else {
 }
 var SubmitButton=`<div id=UIJSRow>
 	<div id=UIJSBottomLeft></div>
-	<div id=UIJSBottomRight><input type=button value='${buttonlabel}' onclick='submit(${parentfunc})'></div>`;
+	<div id=UIJSBottomRight><input  id='UIJSInputButton' type=button value='${buttonlabel}' onclick='submit(${parentfunc})'></div>`;
 //Make Rows String
 for (i=0;i<Types.length;i++){
 Rows.push([Types[i],Defaults[i],Captions[i]]);
@@ -115,6 +115,25 @@ ${SubmitButton}
 </div>
 `;
 ShowInput();
+FirstElem=document.getElementById('Input0'); 
+FirstElem.focus();
+
+OnEnter=function(event) {
+  if (event.key === "Enter") {
+    // Cancel the default action, if needed
+    event.preventDefault();
+    //Click the button if enter is pressed on any input
+    document.getElementById('UIJSInputButton').click();
+  }
+}
+
+//For all inputs add listener for enter
+for (i=0;i<Types.length;i++){
+var idname='Input'+i;
+CurrentElem=document.getElementById('Input0'); 
+CurrentElem.addEventListener("keypress", OnEnter); 
+}
+
 }
 
 function TextInput(Title,Caption,Default=""){
@@ -124,4 +143,3 @@ function TextInput(Title,Caption,Default=""){
 function CentreDialogue(Title,Contents){
   return CustomInput(Title,[],[],[],caption=Contents,buttonlabel="Done");
 }
-
